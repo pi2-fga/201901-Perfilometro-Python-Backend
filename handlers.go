@@ -82,10 +82,18 @@ curl -H "Content-Type: application/json" -d '{"name":"New Todo"}' http://localho
 */
 func CreatePathLocation(w http.ResponseWriter, r *http.Request) {
 	var location Location
-	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
+	body, err := ioutil.ReadAll(r.Body)
+
+	fmt.Printf("%s\n", string(body))
 	
 	if err != nil { panic(err)} 
 	if err := r.Body.Close(); err != nil { panic(err) }
+
+	if err := json.Unmarshal(body, &location); err != nil {
+		fmt.Printf("AQUI HEHE")
+	} else {
+		fmt.Printf("USBUBXEU")
+	}
 
 	if err := json.Unmarshal(body, &location); err != nil {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")

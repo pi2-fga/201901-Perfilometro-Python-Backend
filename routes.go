@@ -46,6 +46,6 @@ var routes = Routes{
 		"PostPath",
 		"POST",
 		"/locations",
-		TodoShow,
+		CreatePathLocation,
 	},
 }

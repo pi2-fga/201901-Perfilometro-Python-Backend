@@ -3,17 +3,14 @@ package main
 import "fmt"
 
 var currentId int
-
 var todos Todos // Todo 
 var paths Path // Path
 
-// Give us some seed data
 func init() {
 	RepoCreateTodo(Todo{Name: "Write presentation"})
 	RepoCreateTodo(Todo{Name: "Host meetup"})
-	RepoCreatePath(Location{Latitude: 0.54, Longitude: 34.94})
-	RepoCreatePath(Location{Latitude: 0.54, Longitude: 34.94})
-}
+	RepoCreatePath(Location{Latitude: "0.53", Longitude: "43.54"})
+	RepoCreatePath(Location{Latitude: "0.653", Longitude: "44.54"})
 }
 
 func RepoFindTodo(id int) Todo {
@@ -22,16 +19,14 @@ func RepoFindTodo(id int) Todo {
 			return t
 		}
 	}
-	// return empty Todo if not found
-	return Todo{}
+	return Todo{} // return empty Todo if not found
 }
 
-//this is bad, I don't think it passes race condtions
 func RepoCreateTodo(t Todo) Todo {
 	currentId += 1
 	t.Id = currentId
 	todos = append(todos, t)
-	return t
+	return t //this is bad, I don't think it passes race condtions
 }
 
 func RepoDestroyTodo(id int) error {
