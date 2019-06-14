@@ -10,3 +10,11 @@ type Todo struct {
 }
 
 type Todos []Todo
+
+type Location struct {
+	Latitude 	float32		`json:"latitude"`
+	Longitude 	float32 	`json:"longitude"`
+	Timestamp   time.Time 	`json:"timestamp"`
+}
+
+type Path []Location

@@ -4,12 +4,16 @@ import "fmt"
 
 var currentId int
 
-var todos Todos
+var todos Todos // Todo 
+var paths Path // Path
 
 // Give us some seed data
 func init() {
 	RepoCreateTodo(Todo{Name: "Write presentation"})
 	RepoCreateTodo(Todo{Name: "Host meetup"})
+	RepoCreatePath(Location{Latitude: 0.54, Longitude: 34.94})
+	RepoCreatePath(Location{Latitude: 0.54, Longitude: 34.94})
+}
 }
 
 func RepoFindTodo(id int) Todo {
@@ -38,4 +42,9 @@ func RepoDestroyTodo(id int) error {
 		}
 	}
 	return fmt.Errorf("Could not find Todo with id of %d to delete", id)
+}
+
+func RepoCreatePath(l Location) Location {
+	paths = append(paths, l)
+	return l
 }

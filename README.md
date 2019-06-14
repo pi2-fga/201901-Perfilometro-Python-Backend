@@ -1,9 +1,5 @@
-# Example 9
-
-## Running the example
-
-To run this example, from the root of this project:
+## To execute
 
 ```sh
-go run ./v9/*.go
+go run ./*.go
 ```

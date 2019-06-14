@@ -36,4 +36,16 @@ var routes = Routes{
 		"/todos/{todoId}",
 		TodoShow,
 	},
+	Route{
+		"GetPath",
+		"GET",
+		"/locations",
+		TodoShow,
+	},
+	Route{
+		"PostPath",
+		"POST",
+		"/locations",
+		TodoShow,
+	},
 }
