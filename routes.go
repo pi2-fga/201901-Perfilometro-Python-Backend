@@ -40,7 +40,7 @@ var routes = Routes{
 		"GetPath",
 		"GET",
 		"/locations",
-		TodoShow,
+		GetPath,
 	},
 	Route{
 		"PostPath",

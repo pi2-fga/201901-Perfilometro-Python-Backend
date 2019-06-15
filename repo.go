@@ -9,8 +9,8 @@ var paths Path // Path
 func init() {
 	RepoCreateTodo(Todo{Name: "Write presentation"})
 	RepoCreateTodo(Todo{Name: "Host meetup"})
-	RepoCreatePath(Location{Latitude: "0.53", Longitude: "43.54"})
-	RepoCreatePath(Location{Latitude: "0.653", Longitude: "44.54"})
+	RepoCreatePath(Location{Latitude: "0.53", Longitude: "43.54", Timestamp: "dsfdf"})
+	RepoCreatePath(Location{Latitude: "0.653", Longitude: "44.54", Timestamp: "dwedwed"})
 }
 
 func RepoFindTodo(id int) Todo {
