@@ -7,5 +7,10 @@ import (
 
 func main() {
 	router := NewRouter()
-	log.Fatal(http.ListenAndServe(":8081", router))
+	port := ":8081"
+	log.Println("listen on", port)
+	if err := http.ListenAndServe(port, router); err != nil {
+		log.Fatal(err)
+		panic(err)
+	} 
 }
