@@ -4,11 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
+	"bytes"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"mime/multipart"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -103,6 +106,87 @@ func CreatePathLocation(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(l); err != nil {
 		panic(err)
 	}
+}
+
+func Upload(client *http.Client, url string, values map[string]io.Reader) (err error) {
+
+    var b bytes.Buffer
+    w := multipart.NewWriter(&b)
+    for key, r := range values {
+        var fw io.Writer
+        if x, ok := r.(io.Closer); ok {
+            defer x.Close()
+        }
+      
+        if x, ok := r.(*os.File); ok {
+            if fw, err = w.CreateFormFile(key, x.Name()); err != nil {
+                return
+            }
+        } else {
+            // Add other fields
+            if fw, err = w.CreateFormField(key); err != nil {
+                return
+            }
+        }
+        if _, err = io.Copy(fw, r); err != nil {
+            return err
+        }
+
+    }
+    // Don't forget to close the multipart writer.
+    // If you don't close it, your request will be missing the terminating boundary.
+    w.Close()
+
+    // Now that you have a form, you can submit it to your handler.
+    req, err := http.NewRequest("POST", url, &b)
+    if err != nil {
+        return
+    }
+	
+	// Don't forget to set the content type, this will contain the boundary.
+    req.Header.Set("Content-Type", w.FormDataContentType())
+    res, err := client.Do(req)
+    if err != nil {
+        return
+    }
+
+    // Check the response
+    if res.StatusCode != http.StatusOK {
+        err = fmt.Errorf("bad status: %s", res.Status)
+    }
+    return
+}
+
+func UploadFile(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("File Upload Endpoint Hit")
+
+    r.ParseMultipartForm(10 << 20)
+   
+    file, handler, err := r.FormFile("myFile")
+    if err != nil {
+        fmt.Println("Error Retrieving the File")
+        fmt.Println(err)
+        return
+    }
+    defer file.Close()
+    fmt.Printf("Uploaded File: %+v\n", handler.Filename)
+    fmt.Printf("File Size: %+v\n", handler.Size)
+    fmt.Printf("MIME Header: %+v\n", handler.Header)
+
+    tempFile, err := ioutil.TempFile("temp-images", "upload-*.png")
+    if err != nil {
+        fmt.Println(err)
+    }
+    defer tempFile.Close()
+
+    fileBytes, err := ioutil.ReadAll(file)
+    if err != nil {
+        fmt.Println(err)
+	}
+	
+    tempFile.Write(fileBytes)
+
+    fmt.Fprintf(w, "Successfully Uploaded File\n")
 }
 
 func GetPath(w http.ResponseWriter, r *http.Request) {

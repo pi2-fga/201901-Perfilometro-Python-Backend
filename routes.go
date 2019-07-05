@@ -48,4 +48,10 @@ var routes = Routes{
 		"/locations",
 		CreatePathLocation,
 	},
+	Route{
+		"PostFile",
+		"POST",
+		"/upload",
+		UploadFile,
+	},
 }
