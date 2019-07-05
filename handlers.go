@@ -189,6 +189,8 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	}
 	defer locationFile.Close()
 
+	formatSensorData(str)
+
 	locationFileBytes, err := ioutil.ReadAll(locationFile)
     if err != nil {
         fmt.Println(err)
@@ -200,6 +202,9 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Uploaded File: %+v\n", locationHandler.Filename)
     fmt.Printf("File Size: %+v\n", locationHandler.Size)
 	fmt.Printf("MIME Header: %+v\n", locationHandler.Header)
+
+
+	
 	
     fmt.Fprintf(w, "Successfully Uploaded File\n")
 }
@@ -209,7 +214,5 @@ func GetPath(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(paths); err != nil {
 		panic(err)
-	}
-
-	
+	}	
 }
