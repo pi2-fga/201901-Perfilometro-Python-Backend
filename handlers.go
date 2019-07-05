@@ -158,34 +158,49 @@ func Upload(client *http.Client, url string, values map[string]io.Reader) (err e
 }
 
 func UploadFile(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("File Upload Endpoint Hit")
-
-    r.ParseMultipartForm(10 << 20)
+	
+	r.ParseMultipartForm(10 << 20) // Limit file size to 10
    
-    file, handler, err := r.FormFile("myFile")
-    if err != nil {
+    sensorFile, sensorHandler, sensorErr := r.FormFile("sensors_data")
+	if sensorErr != nil {
         fmt.Println("Error Retrieving the File")
-        fmt.Println(err)
+        fmt.Println(sensorErr)
         return
-    }
-    defer file.Close()
-    fmt.Printf("Uploaded File: %+v\n", handler.Filename)
-    fmt.Printf("File Size: %+v\n", handler.Size)
-    fmt.Printf("MIME Header: %+v\n", handler.Header)
+	}
+	defer sensorFile.Close()
 
-    tempFile, err := ioutil.TempFile("temp-images", "upload-*.png")
-    if err != nil {
-        fmt.Println(err)
-    }
-    defer tempFile.Close()
-
-    fileBytes, err := ioutil.ReadAll(file)
+	sensorFileBytes, err := ioutil.ReadAll(sensorFile)
     if err != nil {
         fmt.Println(err)
 	}
-	
-    tempFile.Write(fileBytes)
 
+	str := string(sensorFileBytes)
+	fmt.Println(str)
+	
+    fmt.Printf("Uploaded File: %+v\n", sensorHandler.Filename)
+    fmt.Printf("File Size: %+v\n", sensorHandler.Size)
+	fmt.Printf("MIME Header: %+v\n", sensorHandler.Header)
+	
+	locationFile, locationHandler, locationErr := r.FormFile("location_data")
+    if locationErr != nil {
+        fmt.Println("Error Retrieving the File")
+        fmt.Println(locationErr)
+        return
+	}
+	defer locationFile.Close()
+
+	locationFileBytes, err := ioutil.ReadAll(locationFile)
+    if err != nil {
+        fmt.Println(err)
+	}
+
+	s := string(locationFileBytes)
+	fmt.Println(s)
+
+	fmt.Printf("Uploaded File: %+v\n", locationHandler.Filename)
+    fmt.Printf("File Size: %+v\n", locationHandler.Size)
+	fmt.Printf("MIME Header: %+v\n", locationHandler.Header)
+	
     fmt.Fprintf(w, "Successfully Uploaded File\n")
 }
 
@@ -195,4 +210,6 @@ func GetPath(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(paths); err != nil {
 		panic(err)
 	}
+
+	
 }
